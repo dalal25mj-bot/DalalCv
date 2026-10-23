@@ -1,0 +1,1328 @@
+```html
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dalal Alotaibi - Motion Vector CV | Physics Educator & Educational Leader</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Orbitron & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <!-- Chart.js for Skills Radar -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        physics: {
+                            bg: '#080C14',
+                            card: 'rgba(15, 23, 42, 0.65)',
+                            cyan: '#00F0FF',
+                            neon: '#7000FF',
+                            pink: '#FF007A',
+                            accent: '#00E5FF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Orbitron', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 3s infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'grid-move': 'gridMove 20s linear infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0, 240, 255, 0.2)' },
+                            '100%': { boxShadow: '0 0 35px rgba(0, 240, 255, 0.6), 0 0 15px rgba(112, 0, 255, 0.4)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        },
+                        gridMove: {
+                            '0%': { backgroundPosition: '0 0' },
+                            '100%': { backgroundPosition: '40px 40px' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #080C14;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1E293B;
+            border-radius: 4px;
+            border: 1px solid rgba(0,240,255,0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+
+        /* Glassmorphism Styles */
+        .glass-card {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .glass-nav {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        /* Physics Motion Canvas Style */
+        #physics-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Glowing Text FX */
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6), 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+        .neon-text-purple {
+            text-shadow: 0 0 10px rgba(112, 0, 255, 0.6), 0 0 20px rgba(112, 0, 255, 0.3);
+        }
+
+        /* Grid Background Pattern */
+        .vector-grid-bg {
+            background-size: 40px 40px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+        }
+
+        /* Notification Toast */
+        #toast {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-[#080C14] text-slate-100 font-sans antialiased relative overflow-x-hidden vector-grid-bg">
+
+    <!-- Interactive Background Canvas for Motion Vectors & Particles -->
+    <canvas id="physics-canvas"></canvas>
+
+    <!-- Navigation Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo / Title -->
+            <a href="#hero" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-physics-cyan to-physics-neon flex items-center justify-center p-0.5 shadow-lg shadow-physics-cyan/20 group-hover:rotate-12 transition-transform duration-300">
+                    <div class="w-full h-full bg-[#080C14] rounded-[7px] flex items-center justify-center">
+                        <i class="fa-solid fa-atom text-physics-cyan text-lg animate-spin" style="animation-duration: 8s;"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-display font-bold text-lg tracking-wider text-white flex items-center gap-2">
+                        DALAL ALOTAIBI
+                        <span class="text-xs px-2 py-0.5 rounded-full bg-physics-cyan/10 text-physics-cyan border border-physics-cyan/30">PHYSICS</span>
+                    </span>
+                    <p class="text-[10px] text-slate-400 font-mono tracking-widest uppercase">Motion Vector Dynamic Portfolio</p>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <a href="#about" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-compass text-physics-cyan"></i> Summary
+                </a>
+                <a href="#stats" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-chart-line text-physics-cyan"></i> Impact
+                </a>
+                <a href="#skills" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-microscope text-physics-cyan"></i> Skills
+                </a>
+                <a href="#experience" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-timeline text-physics-cyan"></i> Experience
+                </a>
+                <a href="#lab" class="text-slate-300 hover:text-physics-pink transition-colors flex items-center gap-1.5 text-xs font-semibold">
+                    <i class="fa-solid fa-square-root-variable text-physics-pink"></i> Physics Lab
+                </a>
+                <a href="#projects" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-cubes text-physics-cyan"></i> Projects
+                </a>
+                <a href="#certifications" class="text-slate-300 hover:text-physics-cyan transition-colors flex items-center gap-1.5 text-xs">
+                    <i class="fa-solid fa-award text-physics-cyan"></i> Certs
+                </a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="hidden sm:flex items-center space-x-3">
+                <button onclick="copyToClipboard('dal.al25mj@gmail.com', 'Email address copied!')" class="px-4 py-2 rounded-lg bg-physics-cyan/10 hover:bg-physics-cyan/20 border border-physics-cyan/40 text-physics-cyan text-xs font-mono transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-envelope"></i> dal.al25mj@gmail.com
+                </button>
+                <a href="#contact" class="px-4 py-2 rounded-lg bg-gradient-to-r from-physics-cyan to-physics-neon text-slate-950 font-bold text-xs hover:opacity-90 transition-all shadow-md shadow-physics-cyan/20">
+                    Contact <i class="fa-solid fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Menu Toggle -->
+            <button id="mobile-menu-btn" class="md:hidden text-slate-300 hover:text-white p-2">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden glass-card border-t border-physics-cyan/20 px-4 pt-2 pb-6 space-y-2 text-sm">
+            <a href="#about" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Summary & Overview</a>
+            <a href="#stats" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Core Impact Metrics</a>
+            <a href="#skills" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Competency Vectors</a>
+            <a href="#experience" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Career Vector Timeline</a>
+            <a href="#lab" class="mobile-nav-link block px-3 py-1.5 rounded-md text-physics-pink font-semibold hover:bg-physics-pink/10">Interactive Physics Lab</a>
+            <a href="#projects" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Featured Projects (AR & Fair)</a>
+            <a href="#certifications" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Certifications & Training</a>
+            <a href="#volunteering" class="mobile-nav-link block px-3 py-1.5 rounded-md text-slate-200 hover:bg-physics-cyan/10">Volunteering & Languages</a>
+            <a href="#contact" class="mobile-nav-link block px-3 py-1.5 rounded-md text-physics-cyan font-bold hover:bg-physics-cyan/10">Direct Contact Hub</a>
+            <div class="pt-2 flex flex-col gap-2">
+                <button onclick="copyToClipboard('dal.al25mj@gmail.com', 'Email copied!')" class="w-full py-2 bg-physics-cyan/10 border border-physics-cyan/30 text-physics-cyan rounded-md text-xs font-mono flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-envelope"></i> dal.al25mj@gmail.com
+                </button>
+                <button onclick="copyToClipboard('+971559076642', 'Phone number copied!')" class="w-full py-2 bg-slate-800 border border-slate-700 text-slate-200 rounded-md text-xs font-mono flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-phone text-physics-cyan"></i> +971 55 907 6642
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="relative z-10 pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-[85vh] flex flex-col justify-center items-center text-center pt-6 relative">
+            <!-- Vector Badge -->
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-physics-cyan/40 text-physics-cyan text-xs font-mono mb-6 animate-pulse-glow">
+                <span class="w-2 h-2 rounded-full bg-physics-cyan animate-ping"></span>
+                <span>PHYSICS EDUCATOR & EDUCATIONAL LEADER</span>
+                <span class="text-slate-500">|</span>
+                <span class="text-slate-300"><i class="fa-solid fa-location-dot text-physics-pink mr-1"></i>UAE</span>
+            </div>
+
+            <!-- Main Title with Glowing Motion Vectors -->
+            <h1 class="font-display text-4xl sm:text-6xl md:text-7xl font-black text-white tracking-tight leading-none mb-6">
+                DALAL <span class="text-transparent bg-clip-text bg-gradient-to-r from-physics-cyan via-blue-400 to-physics-neon neon-text-cyan">ALOTAIBI</span>
+            </h1>
+
+            <p class="max-w-3xl text-lg sm:text-xl text-slate-300 font-light leading-relaxed mb-8">
+                Transforming scientific curiosity into measurable academic excellence. <span class="text-physics-cyan font-medium">14 years</span> of educational mastery, curriculum design, and staff leadership with specialized expertise in <span class="text-white font-medium underline decoration-physics-cyan decoration-2 underline-offset-4">Augmented Reality (AR) integration</span> and MOE McGraw-Hill physics frameworks.
+            </p>
+
+            <!-- Quick Access Vector Navigation Grid -->
+            <div class="w-full max-w-5xl mb-8 glass-card p-6 rounded-2xl border border-physics-cyan/30 shadow-2xl bg-slate-950/80">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-800/80 pb-3">
+                    <span class="text-xs font-mono text-physics-cyan uppercase tracking-widest flex items-center gap-2">
+                        <i class="fa-solid fa-compass animate-spin text-physics-cyan" style="animation-duration: 10s;"></i>
+                        QUICK ACCESS VECTOR CONTROLS
+                    </span>
+                    <span class="text-[10px] font-mono text-slate-500 hidden sm:inline-block">Click to jump directly to any vector section</span>
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
+                    <!-- Quick Access 1 -->
+                    <a href="#about" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-physics-cyan/15 border border-physics-cyan/30 hover:border-physics-cyan text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-physics-cyan/20">
+                        <div class="w-8 h-8 rounded-lg bg-physics-cyan/10 text-physics-cyan border border-physics-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-file-lines"></i>
+                        </div>
+                        <span class="text-left font-sans">Executive Summary</span>
+                    </a>
+
+                    <!-- Quick Access 2 -->
+                    <a href="#stats" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-physics-neon/15 border border-physics-neon/30 hover:border-physics-neon text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-physics-neon/20">
+                        <div class="w-8 h-8 rounded-lg bg-physics-neon/10 text-physics-neon border border-physics-neon/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <span class="text-left font-sans">Core Impact Metrics</span>
+                    </a>
+
+                    <!-- Quick Access 3 -->
+                    <a href="#skills" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-physics-cyan/15 border border-physics-cyan/30 hover:border-physics-cyan text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-physics-cyan/20">
+                        <div class="w-8 h-8 rounded-lg bg-physics-cyan/10 text-physics-cyan border border-physics-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-microscope"></i>
+                        </div>
+                        <span class="text-left font-sans">Competency Vectors</span>
+                    </a>
+
+                    <!-- Quick Access 4 -->
+                    <a href="#experience" class="px-4 py-3 rounded-xl bg-gradient-to-r from-physics-cyan/20 to-blue-600/20 hover:from-physics-cyan hover:to-blue-600 border border-physics-cyan text-physics-cyan hover:text-slate-950 font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-lg shadow-physics-cyan/15">
+                        <div class="w-8 h-8 rounded-lg bg-physics-cyan text-slate-950 font-bold flex items-center justify-center group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-timeline"></i>
+                        </div>
+                        <span class="text-left font-sans">Career Vector Timeline</span>
+                    </a>
+
+                    <!-- Quick Access 5 -->
+                    <a href="#lab" class="px-4 py-3 rounded-xl bg-gradient-to-r from-physics-pink/20 to-purple-600/20 hover:from-physics-pink hover:to-physics-neon border border-physics-pink text-physics-pink hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-lg shadow-physics-pink/15">
+                        <div class="w-8 h-8 rounded-lg bg-physics-pink text-white flex items-center justify-center group-hover:rotate-12 transition-transform">
+                            <i class="fa-solid fa-atom animate-spin" style="animation-duration: 6s;"></i>
+                        </div>
+                        <span class="text-left font-sans">Interactive Physics Lab</span>
+                    </a>
+
+                    <!-- Quick Access 6 -->
+                    <a href="#projects" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-physics-cyan/15 border border-physics-cyan/30 hover:border-physics-cyan text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-physics-cyan/20">
+                        <div class="w-8 h-8 rounded-lg bg-physics-cyan/10 text-physics-cyan border border-physics-cyan/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-vr-cardboard"></i>
+                        </div>
+                        <span class="text-left font-sans">Featured Projects (AR)</span>
+                    </a>
+
+                    <!-- Quick Access 7 -->
+                    <a href="#certifications" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-emerald-500/15 border border-emerald-500/30 hover:border-emerald-400 text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-emerald-500/20">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                        <span class="text-left font-sans">Certifications & Training</span>
+                    </a>
+
+                    <!-- Quick Access 8 -->
+                    <a href="#volunteering" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-amber-500/15 border border-amber-500/30 hover:border-amber-400 text-slate-200 hover:text-white font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md hover:shadow-amber-500/20">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/30 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-earth-americas"></i>
+                        </div>
+                        <span class="text-left font-sans">Volunteering & Languages</span>
+                    </a>
+
+                    <!-- Quick Access 9 -->
+                    <a href="#contact" class="px-4 py-3 rounded-xl bg-slate-900/90 hover:bg-physics-cyan/20 border border-physics-cyan/40 hover:border-physics-cyan text-physics-cyan font-bold text-xs sm:text-sm transition-all flex items-center gap-3 group shadow-md">
+                        <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 text-physics-cyan flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <span class="text-left font-sans">Direct Contact Hub</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Physics HUD Floating Vector Indicators -->
+            <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-4xl text-left">
+                <div class="glass-card p-4 rounded-xl border-l-4 border-l-physics-cyan">
+                    <span class="text-[10px] font-mono text-physics-cyan uppercase block mb-1">Vector Field 01</span>
+                    <span class="text-sm font-semibold text-white block">Curriculum Leadership</span>
+                    <span class="text-xs text-slate-400">45 Teachers & Staff Managed</span>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-l-physics-neon">
+                    <span class="text-[10px] font-mono text-physics-neon uppercase block mb-1">Vector Field 02</span>
+                    <span class="text-sm font-semibold text-white block">Digital Pedagogy</span>
+                    <span class="text-xs text-slate-400">AR & Interactive Tech</span>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-l-physics-pink">
+                    <span class="text-[10px] font-mono text-physics-pink uppercase block mb-1">Vector Field 03</span>
+                    <span class="text-sm font-semibold text-white block">Academic Honors</span>
+                    <span class="text-xs text-slate-400">First Class Honours (GPA 3.56)</span>
+                </div>
+                <div class="glass-card p-4 rounded-xl border-l-4 border-l-emerald-400">
+                    <span class="text-[10px] font-mono text-emerald-400 uppercase block mb-1">Vector Field 04</span>
+                    <span class="text-sm font-semibold text-white block">Efficiency Uplift</span>
+                    <span class="text-xs text-slate-400">+50% Team Output</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Executive Summary Section -->
+        <section id="about" class="scroll-mt-28">
+            <div class="glass-card p-6 sm:p-10 rounded-2xl relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-physics-cyan/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">01</div>
+                    <h2 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-wide">PROFESSIONAL SUMMARY</h2>
+                </div>
+
+                <p class="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
+                    Physics Educator with <strong class="text-physics-cyan font-semibold">14 years of professional experience</strong>, including 12 years dedicated to classroom teaching, curriculum-aligned instruction, and hands-on scientific learning. Proven educational leader who coordinated <strong class="text-white font-semibold">45 teachers and administrative staff</strong>, driving team efficiency up by <strong class="text-physics-cyan font-semibold">50%</strong> while significantly reducing operational conflicts. Advanced expertise in MOE McGraw-Hill curriculum delivery, lesson planning, digital learning integration, educational technology, student assessment, and curriculum development.
+                </p>
+
+                <!-- Core Pillars -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-800">
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 rounded-xl bg-physics-cyan/10 text-physics-cyan border border-physics-cyan/30 mt-1">
+                            <i class="fa-solid fa-graduation-cap text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-1">Classroom Mastery</h3>
+                            <p class="text-xs text-slate-400">12+ years delivering MOE McGraw-Hill 12th grade & 3rd-grade secondary physics & natural sciences.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 rounded-xl bg-physics-neon/10 text-physics-neon border border-physics-neon/30 mt-1">
+                            <i class="fa-solid fa-people-roof text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-1">Educational Leadership</h3>
+                            <p class="text-xs text-slate-400">Supervised, mentored, and optimized operations for 45 educators and staff members.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="p-3 rounded-xl bg-physics-pink/10 text-physics-pink border border-physics-pink/30 mt-1">
+                            <i class="fa-solid fa-vr-cardboard text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base mb-1">AR & Digital Innovation</h3>
+                            <p class="text-xs text-slate-400">Pioneered Augmented Reality integration & interactive magazine tech in physics instruction.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kinetic Metrics Counters Section -->
+        <section id="stats" class="scroll-mt-28">
+            <div class="text-center mb-10">
+                <span class="text-xs font-mono text-physics-cyan uppercase tracking-widest">// Quantitative Impact Metrics</span>
+                <h2 class="font-display text-3xl font-bold text-white mt-1">THE KINETIC METRICS</h2>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+                <div class="glass-card p-6 rounded-2xl text-center group">
+                    <div class="text-3xl sm:text-4xl font-display font-black text-physics-cyan mb-2 group-hover:scale-110 transition-transform">
+                        <span class="counter-num" data-target="14">0</span>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">Years Professional Experience</span>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl text-center group">
+                    <div class="text-3xl sm:text-4xl font-display font-black text-physics-neon mb-2 group-hover:scale-110 transition-transform">
+                        <span class="counter-num" data-target="12">0</span>
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">Years Dedicated Teaching</span>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl text-center group">
+                    <div class="text-3xl sm:text-4xl font-display font-black text-white mb-2 group-hover:scale-110 transition-transform">
+                        <span class="counter-num" data-target="45">0</span>+
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">Teachers & Staff Coordinated</span>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl text-center group">
+                    <div class="text-3xl sm:text-4xl font-display font-black text-emerald-400 mb-2 group-hover:scale-110 transition-transform">
+                        +<span class="counter-num" data-target="50">0</span>%
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">Team Efficiency Boost</span>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl text-center group col-span-2 lg:col-span-1">
+                    <div class="text-3xl sm:text-4xl font-display font-black text-physics-pink mb-2 group-hover:scale-110 transition-transform">
+                        <span class="counter-num" data-target="25">0</span>%
+                    </div>
+                    <span class="text-xs font-mono text-slate-400 uppercase tracking-wider block">Scheduling Conflicts Reduced</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Core Competencies & Skills Radar -->
+        <section id="skills" class="scroll-mt-28">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">02</div>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-wide">CORE COMPETENCIES & SKILL VECTORS</h2>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <!-- Left: Competency Meters -->
+                <div class="lg:col-span-7 space-y-5">
+                    <div class="glass-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-book-open text-physics-cyan"></i> MOE McGraw-Hill Physics Curriculum
+                            </span>
+                            <span class="text-xs font-mono text-physics-cyan">98% Mastery</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-physics-cyan to-blue-500 rounded-full" style="width: 98%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-cube text-physics-neon"></i> Augmented Reality (AR) & EdTech Integration
+                            </span>
+                            <span class="text-xs font-mono text-physics-neon">95% Mastery</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-physics-neon to-purple-500 rounded-full" style="width: 95%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-users-gear text-emerald-400"></i> Staff Supervision & KPI / MEL Coordination
+                            </span>
+                            <span class="text-xs font-mono text-emerald-400">92% Leadership</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full" style="width: 92%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-flask text-physics-pink"></i> Experiential Labs & DIY Physics Fairs
+                            </span>
+                            <span class="text-xs font-mono text-physics-pink">96% Mastery</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-physics-pink to-rose-500 rounded-full" style="width: 96%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm font-semibold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-clipboard-check text-amber-400"></i> Assessment & Knowledge Retention Tracking
+                            </span>
+                            <span class="text-xs font-mono text-amber-400">90% Mastery</span>
+                        </div>
+                        <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Chart.js Radar Visualization -->
+                <div class="lg:col-span-5 glass-card p-6 rounded-2xl flex flex-col items-center justify-center min-h-[360px]">
+                    <span class="text-xs font-mono text-physics-cyan uppercase tracking-wider mb-4">// Radar Field Analysis</span>
+                    <div class="w-full max-w-[320px] aspect-square relative">
+                        <canvas id="skillsRadarChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Experience Dynamic Vector Timeline -->
+        <section id="experience" class="scroll-mt-28">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">03</div>
+                    <h2 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-wide">PROFESSIONAL EXPERIENCE VECTOR</h2>
+                </div>
+
+                <!-- Filter Pills -->
+                <div class="flex flex-wrap gap-2 text-xs font-mono">
+                    <button onclick="filterTimeline('all')" class="filter-btn active px-3 py-1.5 rounded-lg bg-physics-cyan text-slate-950 font-bold transition-all" data-filter="all">ALL</button>
+                    <button onclick="filterTimeline('education')" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition-all" data-filter="education">EDUCATION & MOE</button>
+                    <button onclick="filterTimeline('admin')" class="filter-btn px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white transition-all" data-filter="admin">LEADERSHIP & OPERATIONS</button>
+                </div>
+            </div>
+
+            <!-- Timeline Stack -->
+            <div class="relative border-l-2 border-physics-cyan/30 ml-4 sm:ml-8 space-y-12">
+
+                <!-- Experience Item 1 -->
+                <div class="timeline-item relative pl-6 sm:pl-10 group" data-category="education">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-[#080C14] border-2 border-physics-cyan flex items-center justify-center text-physics-cyan group-hover:scale-125 transition-transform">
+                        <i class="fa-solid fa-atom text-xs"></i>
+                    </div>
+
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-md bg-physics-cyan/10 border border-physics-cyan/30 text-physics-cyan font-mono text-xs font-semibold">Jan 2011 - Dec 2022 | Shaqra</span>
+                            <span class="text-xs font-mono text-slate-400"><i class="fa-solid fa-building text-physics-pink mr-1"></i>Ministry of Education</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Science & Physics Teacher (MOE McGraw-Hill Curriculum)</h3>
+                        <p class="text-sm text-physics-cyan/80 font-mono mb-4">Ministry of Education • Saudi Arabia</p>
+
+                        <ul class="space-y-3 text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-angle-right text-physics-cyan mt-1"></i>
+                                <span><strong>Curriculum Delivery & Lesson Planning:</strong> Planned and delivered high-quality, standards-aligned physics and natural science instruction based on the MOE McGraw-Hill curriculum for 12th grade and 3rd-grade secondary curricula.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-angle-right text-physics-cyan mt-1"></i>
+                                <span><strong>Digital & Interactive Learning Integration:</strong> Integrated interactive digital tools, augmented reality (AR) concepts, and online activities to boost student engagement and foster practical scientific comprehension.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-angle-right text-physics-cyan mt-1"></i>
+                                <span><strong>Assessment & Performance Tracking:</strong> Designed and executed formative and summative assessments to measure student academic growth, track knowledge retention, and refine teaching strategies.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-angle-right text-physics-cyan mt-1"></i>
+                                <span><strong>Practical Experiential Learning:</strong> Facilitated hands-on laboratory experiments and project-based fairs to strengthen scientific reasoning, problem-solving, and peer collaboration.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience Item 2 -->
+                <div class="timeline-item relative pl-6 sm:pl-10 group" data-category="admin education">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-[#080C14] border-2 border-physics-neon flex items-center justify-center text-physics-neon group-hover:scale-125 transition-transform">
+                        <i class="fa-solid fa-user-shield text-xs"></i>
+                    </div>
+
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-md bg-physics-neon/10 border border-physics-neon/30 text-physics-neon font-mono text-xs font-semibold">Jan 2015 - Dec 2017 | Shaqra</span>
+                            <span class="text-xs font-mono text-slate-400"><i class="fa-solid fa-sitemap text-physics-neon mr-1"></i>Ministry of Education</span>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-bold text-white mb-2">Physics & Science Supervisor / KPIs, CTR, MEL Coordinator</h3>
+                        <p class="text-sm text-physics-neon/80 font-mono mb-4">Ministry of Education • Shaqra</p>
+
+                        <p class="text-sm text-slate-300 leading-relaxed mb-4">
+                            Coordinated <strong>45 teachers and administrative staff</strong>, driving overall team efficiency up by <strong>50%</strong> while dramatically reducing operational friction and scheduling conflicts. Monitored teaching KPIs, CTR metrics, and MEL framework implementation across district schools.
+                        </p>
+                        
+                        <div class="flex flex-wrap gap-2 text-xs font-mono text-slate-400 pt-2 border-t border-slate-800">
+                            <span class="px-2 py-1 rounded bg-slate-800/80 border border-slate-700">KPI Supervision</span>
+                            <span class="px-2 py-1 rounded bg-slate-800/80 border border-slate-700">Team Optimization (+50%)</span>
+                            <span class="px-2 py-1 rounded bg-slate-800/80 border border-slate-700">CTR & MEL Framework</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Experience Item 3 -->
+                <div class="timeline-item relative pl-6 sm:pl-10 group" data-category="admin">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-[#080C14] border-2 border-emerald-400 flex items-center justify-center text-emerald-400 group-hover:scale-125 transition-transform">
+                        <i class="fa-solid fa-hospital-user text-xs"></i>
+                    </div>
+
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-semibold">Jan 2011 - Dec 2012 | Riyadh</span>
+                            <span class="text-xs font-mono text-slate-400"><i class="fa-solid fa-notes-medical text-emerald-400 mr-1"></i>Alhabeb Medical Center</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Patient Relations Officer</h3>
+
+                        <ul class="space-y-2 text-sm text-slate-300">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                                <span><strong>Schedule & Appointment Management:</strong> Managed complex patient appointment schedules and calendar workflows, reducing scheduling conflicts by 25%.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+                                <span><strong>Service Excellence & Coordination:</strong> Served as primary liaison for inquiries and complaint resolution, streamlining multi-departmental patient flow.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Experience Item 4 -->
+                <div class="timeline-item relative pl-6 sm:pl-10 group" data-category="admin">
+                    <div class="absolute -left-[17px] top-1.5 w-8 h-8 rounded-full bg-[#080C14] border-2 border-amber-400 flex items-center justify-center text-amber-400 group-hover:scale-125 transition-transform">
+                        <i class="fa-solid fa-briefcase text-xs"></i>
+                    </div>
+
+                    <div class="glass-card p-6 sm:p-8 rounded-2xl">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                            <span class="px-3 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-xs font-semibold">2010 - 2011 | Riyadh</span>
+                            <span class="text-xs font-mono text-slate-400"><i class="fa-solid fa-building-columns text-amber-400 mr-1"></i>AlJazira Bank</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-2">Life Insurance Agent</h3>
+                        <p class="text-sm text-slate-300">Consistently achieved quarterly targets, provided consultative financial solutions, and maintained meticulous compliant client interaction records.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Interactive Physics Vector Simulation Widget -->
+        <section id="lab" class="scroll-mt-28">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl border border-physics-pink/40 relative overflow-hidden">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 border-b border-slate-800 pb-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-physics-pink/10 text-physics-pink font-mono text-xs mb-2">
+                            <i class="fa-solid fa-flask font-bold"></i> INTERACTIVE PEDAGOGICAL DEMO
+                        </div>
+                        <h2 class="font-display text-2xl sm:text-3xl font-bold text-white">INTERACTIVE MOTION VECTOR LAB</h2>
+                        <p class="text-xs text-slate-400 mt-1">Interactive simulation demonstrating initial velocity ($V_0$), launch angle ($\theta$), gravity ($g$), and real-time motion vector fields.</p>
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <button id="sim-fire-btn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-physics-pink to-physics-neon text-white font-bold text-xs uppercase tracking-wider hover:opacity-90 transition-all flex items-center gap-2 shadow-lg shadow-physics-pink/20">
+                            <i class="fa-solid fa-rocket"></i> Launch Vector
+                        </button>
+                        <button id="sim-reset-btn" class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white border border-slate-700 font-mono text-xs">
+                            <i class="fa-solid fa-rotate-right"></i> Reset
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Controls Column -->
+                    <div class="lg:col-span-4 space-y-6 glass-card p-5 rounded-2xl bg-slate-900/80">
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-2">
+                                <span class="text-slate-300">Launch Velocity ($v_0$)</span>
+                                <span id="v0-val" class="text-physics-cyan font-bold">65 m/s</span>
+                            </div>
+                            <input type="range" id="v0-slider" min="20" max="100" value="65" class="w-full accent-physics-cyan bg-slate-800 rounded-lg h-2">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-2">
+                                <span class="text-slate-300">Launch Angle ($\theta$)</span>
+                                <span id="angle-val" class="text-physics-neon font-bold">45°</span>
+                            </div>
+                            <input type="range" id="angle-slider" min="15" max="80" value="45" class="w-full accent-physics-neon bg-slate-800 rounded-lg h-2">
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-2">
+                                <span class="text-slate-300">Gravity Field ($g$)</span>
+                                <span id="g-val" class="text-physics-pink font-bold">9.8 m/s²</span>
+                            </div>
+                            <input type="range" id="g-slider" min="1.6" max="25" step="0.1" value="9.8" class="w-full accent-physics-pink bg-slate-800 rounded-lg h-2">
+                        </div>
+
+                        <!-- Real-time Physics Output Data -->
+                        <div class="pt-4 border-t border-slate-800 space-y-2 font-mono text-xs">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Max Height ($H_{max}$):</span>
+                                <span id="out-hmax" class="text-white font-bold">0.00 m</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Total Range ($R$):</span>
+                                <span id="out-range" class="text-white font-bold">0.00 m</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400">Flight Time ($T$):</span>
+                                <span id="out-time" class="text-white font-bold">0.00 s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Interactive Simulation -->
+                    <div class="lg:col-span-8 glass-card p-4 rounded-2xl bg-[#050811] relative min-h-[320px] flex items-center justify-center overflow-hidden">
+                        <canvas id="sim-canvas" class="w-full h-[320px] block rounded-xl"></canvas>
+                        <div class="absolute top-3 left-3 text-[10px] font-mono text-slate-500 pointer-events-none">
+                            // VECTOR FIELD TRAJECTORY SIMULATOR (LIVE PHYSICS CANVAS)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects & AR Innovations -->
+        <section id="projects" class="scroll-mt-28">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">04</div>
+                <h2 class="font-display text-2xl sm:text-3xl font-bold text-white tracking-wide">MAJOR PROJECTS & AR INNOVATIONS</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Project Card 1 -->
+                <div class="glass-card p-6 sm:p-8 rounded-2xl flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full bg-physics-pink/10 border border-physics-pink/30 text-physics-pink font-mono text-xs font-bold">Lead Organizer • Riyadh</span>
+                            <i class="fa-solid fa-vr-cardboard text-2xl text-physics-pink group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Augmented Reality in Physics Project</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Coordinated an innovative project combining interactive magazine production, physics laboratory experiments, machine-based learning applications, and augmented reality (AR). Guided research, technical writing, graphics design, digital online activities, and formative learning assessments.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-physics-cyan">
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">AR Technology</span>
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">Interactive Magazine</span>
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">Machine Learning</span>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="glass-card p-6 sm:p-8 rounded-2xl flex flex-col justify-between group">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full bg-physics-cyan/10 border border-physics-cyan/30 text-physics-cyan font-mono text-xs font-bold">Lead Organizer • Riyadh</span>
+                            <i class="fa-solid fa-hands-holding-circle text-2xl text-physics-cyan group-hover:scale-125 transition-transform"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-3">Physics DIY Fair</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                            Organized student-built demonstrations and guided experiment design, concept explanations, public presentations, formative assessments, and peer feedback. Strengthened scientific reasoning, creativity, team collaboration, and active student engagement through hands-on experiential learning.
+                        </p>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800 flex flex-wrap gap-2 text-xs font-mono text-physics-cyan">
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">DIY Experiments</span>
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">Experiential Learning</span>
+                        <span class="px-2.5 py-1 rounded bg-physics-cyan/10 border border-physics-cyan/20">Peer Assessment</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education, Certifications & Volunteering -->
+        <section class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Education & Volunteering Column -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">05</div>
+                    <h2 class="font-display text-2xl font-bold text-white">ACADEMIC DEGREES</h2>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-l-physics-cyan">
+                    <span class="text-xs font-mono text-physics-cyan font-semibold block mb-1">PNU - College of Education Academic Depts</span>
+                    <h3 class="text-xl font-bold text-white mb-2">Bachelor of Science & Education in Physics</h3>
+                    <div class="flex items-center gap-3 font-mono text-xs">
+                        <span class="px-2.5 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">First Class Honours</span>
+                        <span class="text-slate-300">GPA: <strong>3.56</strong></span>
+                    </div>
+                </div>
+
+                <!-- Volunteering & Languages Card with Quick Access Anchor -->
+                <div id="volunteering" class="glass-card p-6 rounded-2xl space-y-4 scroll-mt-28">
+                    <h3 class="font-display text-lg font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-earth-americas text-physics-pink"></i> VOLUNTEERING & LANGUAGES
+                    </h3>
+
+                    <div>
+                        <h4 class="text-sm font-bold text-white">King Abdullah National Dialogue Center (Riyadh)</h4>
+                        <p class="text-xs text-slate-300 mt-1">Assistant: Supported international training and cross-cultural learning activities, fostering strategic partnership, adaptability, and cross-cultural teamwork.</p>
+                    </div>
+
+                    <div class="pt-2 flex items-center justify-between font-mono text-xs">
+                        <span class="text-slate-400">Arabic: <strong class="text-physics-cyan">Native</strong></span>
+                        <span class="text-slate-400">English: <strong class="text-physics-neon">Advanced</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certifications Grid with Quick Access Anchor -->
+            <div id="certifications" class="lg:col-span-7 space-y-6 scroll-mt-28">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-physics-cyan/20 border border-physics-cyan flex items-center justify-center text-physics-cyan font-mono text-sm">06</div>
+                    <h2 class="font-display text-2xl font-bold text-white">CERTIFICATIONS & TRAINING</h2>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-award text-physics-cyan text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">ICT Skills Foundation</h4>
+                            <p class="text-xs text-slate-400">Cambridge International Exams</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-certificate text-physics-neon text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Certified Trainer</h4>
+                            <p class="text-xs text-slate-400">Intl Academy for Training & Consulting</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-user-gear text-emerald-400 text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">TOT - Concept Training</h4>
+                            <p class="text-xs text-slate-400">TVTC Certification</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-lightbulb text-amber-400 text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Creative Leadership Training</h4>
+                            <p class="text-xs text-slate-400">TVTC Certification</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-bolt text-physics-pink text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Accelerated Learning TOT</h4>
+                            <p class="text-xs text-slate-400">TVTC Certification</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-brands fa-microsoft text-blue-400 text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">MIE Microsoft Educator</h4>
+                            <p class="text-xs text-slate-400">Microsoft Learn Educator Center</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-square-poll-vertical text-physics-cyan text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">TIMSS Science Tests</h4>
+                            <p class="text-xs text-slate-400">NIPED Certification</p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-4 rounded-xl flex items-start gap-3">
+                        <i class="fa-solid fa-book text-emerald-400 text-lg mt-1"></i>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Developed Natural Science</h4>
+                            <p class="text-xs text-slate-400">McGraw-Hill / MOE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section / Quick Communication Hub -->
+        <section id="contact" class="scroll-mt-28">
+            <div class="glass-card p-8 sm:p-12 rounded-3xl text-center relative overflow-hidden border border-physics-cyan/30">
+                <div class="max-w-2xl mx-auto space-y-6">
+                    <span class="text-xs font-mono text-physics-cyan uppercase tracking-widest">// Initiate Direct Vector Contact</span>
+                    <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white">LET'S CONNECT & COLLABORATE</h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Ready to elevate physics education standards, drive STEM/AR initiatives, or lead instructional faculty to success across the UAE and Gulf region.
+                    </p>
+
+                    <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+                        <button onclick="copyToClipboard('dal.al25mj@gmail.com', 'Email copied to clipboard!')" class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-physics-cyan to-blue-600 text-slate-950 font-bold text-sm hover:scale-105 transition-all shadow-lg shadow-physics-cyan/20 flex items-center gap-2">
+                            <i class="fa-solid fa-envelope"></i> dal.al25mj@gmail.com
+                        </button>
+                        <button onclick="copyToClipboard('+971559076642', 'Phone number copied to clipboard!')" class="px-6 py-3.5 rounded-xl glass-card text-white border border-physics-cyan/40 hover:bg-physics-cyan/10 font-bold text-sm transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-physics-cyan"></i> +971 55 907 6642
+                        </button>
+                    </div>
+
+                    <div class="pt-6 text-xs text-slate-500 font-mono">
+                        Location: UAE • Saudi Arabia
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800/80 bg-[#050811] py-8 text-center text-xs font-mono text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p>© 2026 Dalal Alotaibi. All Physics Motion Vectors & Content Reserved.</p>
+            <p class="flex items-center gap-2">
+                <span>Made with</span>
+                <i class="fa-solid fa-atom text-physics-cyan animate-pulse"></i>
+                <span>Vector Physics Engine</span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 pointer-events-none px-5 py-3 rounded-xl bg-physics-cyan text-slate-950 font-bold text-sm shadow-xl flex items-center gap-3">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toast-msg">Copied to clipboard!</span>
+    </div>
+
+    <!-- MAIN JAVASCRIPT LOGIC -->
+    <script>
+        // Copy to clipboard helper
+        function copyToClipboard(text, message) {
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Trigger Toast
+            const toast = document.getElementById("toast");
+            const toastMsg = document.getElementById("toast-msg");
+            toastMsg.innerText = message;
+            toast.classList.remove("translate-y-24", "opacity-0", "pointer-events-none");
+            
+            setTimeout(() => {
+                toast.classList.add("translate-y-24", "opacity-0", "pointer-events-none");
+            }, 3000);
+        }
+
+        // Timeline Filter
+        function filterTimeline(category) {
+            const items = document.querySelectorAll('.timeline-item');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            btns.forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.classList.add('bg-physics-cyan', 'text-slate-950', 'font-bold');
+                    btn.classList.remove('bg-slate-800', 'text-slate-300');
+                } else {
+                    btn.classList.remove('bg-physics-cyan', 'text-slate-950', 'font-bold');
+                    btn.classList.add('bg-slate-800', 'text-slate-300');
+                }
+            });
+
+            items.forEach(item => {
+                const cats = item.getAttribute('data-category');
+                if (category === 'all' || cats.includes(category)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+        document.querySelectorAll('.mobile-nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Numerical Counters Animation on Intersection
+        const observerOptions = { threshold: 0.2 };
+        const counterObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counters = entry.target.querySelectorAll('.counter-num');
+                    counters.forEach(counter => {
+                        const target = +counter.getAttribute('data-target');
+                        let count = 0;
+                        const speed = Math.max(1, Math.floor(target / 40));
+                        const updateCount = () => {
+                            count += speed;
+                            if (count < target) {
+                                counter.innerText = count;
+                                setTimeout(updateCount, 30);
+                            } else {
+                                counter.innerText = target;
+                            }
+                        };
+                        updateCount();
+                    });
+                    counterObserver.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        const statsSection = document.getElementById('stats');
+        if (statsSection) counterObserver.observe(statsSection);
+
+        // Radar Chart Initializer
+        window.addEventListener('load', () => {
+            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['MOE Physics', 'AR Integration', 'Staff Leadership', 'DIY & Experiential Labs', 'Assessment & KPIs', 'EdTech Systems'],
+                    datasets: [{
+                        label: 'Competency Level',
+                        data: [98, 95, 92, 96, 90, 94],
+                        backgroundColor: 'rgba(0, 240, 255, 0.2)',
+                        borderColor: '#00F0FF',
+                        pointBackgroundColor: '#7000FF',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#00F0FF',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: {
+                                color: '#94A3B8',
+                                font: { family: 'Inter', size: 10 }
+                            },
+                            ticks: { display: false, max: 100 }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        });
+
+        // ==========================================
+        // BACKGROUND MOTION VECTOR CANVAS SIMULATOR
+        // ==========================================
+        const bgCanvas = document.getElementById('physics-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+
+        let particles = [];
+        let mouse = { x: null, y: null, radius: 150 };
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        window.addEventListener('resize', resizeBgCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.x;
+            mouse.y = e.y;
+        });
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = Math.random() * bgCanvas.height;
+                this.vx = (Math.random() - 0.5) * 1.2;
+                this.vy = (Math.random() - 0.5) * 1.2;
+                this.radius = Math.random() * 2 + 1;
+                this.color = Math.random() > 0.5 ? '#00F0FF' : '#7000FF';
+            }
+
+            draw() {
+                bgCtx.beginPath();
+                bgCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                bgCtx.fillStyle = this.color;
+                bgCtx.fill();
+
+                // Draw velocity vector arrow tail
+                bgCtx.beginPath();
+                bgCtx.moveTo(this.x, this.y);
+                bgCtx.lineTo(this.x + this.vx * 8, this.y + this.vy * 8);
+                bgCtx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
+                bgCtx.lineWidth = 1;
+                bgCtx.stroke();
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                if (this.x < 0 || this.x > bgCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > bgCanvas.height) this.vy *= -1;
+
+                // Mouse Force Interaction
+                if (mouse.x && mouse.y) {
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < mouse.radius) {
+                        let force = (mouse.radius - dist) / mouse.radius;
+                        this.x -= (dx / dist) * force * 3;
+                        this.y -= (dy / dist) * force * 3;
+                    }
+                }
+
+                this.draw();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.floor((bgCanvas.width * bgCanvas.height) / 18000);
+            for (let i = 0; i < count; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 100) {
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(particles[i].x, particles[i].y);
+                        bgCtx.lineTo(particles[j].x, particles[j].y);
+                        bgCtx.strokeStyle = `rgba(0, 240, 255, ${0.12 - dist / 1000})`;
+                        bgCtx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        resizeBgCanvas();
+        animateParticles();
+
+        // ==========================================
+        // INTERACTIVE PHYSICS TRAJECTORY SIMULATOR
+        // ==========================================
+        const simCanvas = document.getElementById('sim-canvas');
+        const simCtx = simCanvas.getContext('2d');
+
+        const v0Slider = document.getElementById('v0-slider');
+        const angleSlider = document.getElementById('angle-slider');
+        const gSlider = document.getElementById('g-slider');
+
+        const v0Val = document.getElementById('v0-val');
+        const angleVal = document.getElementById('angle-val');
+        const gVal = document.getElementById('g-val');
+
+        const outHmax = document.getElementById('out-hmax');
+        const outRange = document.getElementById('out-range');
+        const outTime = document.getElementById('out-time');
+
+        const fireBtn = document.getElementById('sim-fire-btn');
+        const resetBtn = document.getElementById('sim-reset-btn');
+
+        let isAnimating = false;
+        let animProgress = 0;
+
+        function updateSimOutputs() {
+            const v0 = parseFloat(v0Slider.value);
+            const deg = parseFloat(angleSlider.value);
+            const rad = (deg * Math.PI) / 180;
+            const g = parseFloat(gSlider.value);
+
+            v0Val.innerText = `${v0} m/s`;
+            angleVal.innerText = `${deg}°`;
+            gVal.innerText = `${g} m/s²`;
+
+            // Physics Formulas
+            const hMax = (v0 * v0 * Math.sin(rad) * Math.sin(rad)) / (2 * g);
+            const totalRange = (v0 * v0 * Math.sin(2 * rad)) / g;
+            const totalTime = (2 * v0 * Math.sin(rad)) / g;
+
+            outHmax.innerText = `${hMax.toFixed(2)} m`;
+            outRange.innerText = `${totalRange.toFixed(2)} m`;
+            outTime.innerText = `${totalTime.toFixed(2)} s`;
+
+            drawTrajectory(1.0);
+        }
+
+        function drawTrajectory(progress = 1.0) {
+            simCanvas.width = simCanvas.parentElement.clientWidth;
+            simCanvas.height = simCanvas.parentElement.clientHeight;
+
+            const w = simCanvas.width;
+            const h = simCanvas.height;
+
+            simCtx.clearRect(0, 0, w, h);
+
+            const v0 = parseFloat(v0Slider.value);
+            const deg = parseFloat(angleSlider.value);
+            const rad = (deg * Math.PI) / 180;
+            const g = parseFloat(gSlider.value);
+
+            const totalTime = (2 * v0 * Math.sin(rad)) / g;
+            const totalRange = (v0 * v0 * Math.sin(2 * rad)) / g;
+            const hMax = (v0 * v0 * Math.sin(rad) * Math.sin(rad)) / (2 * g);
+
+            // Scale calculations to canvas size
+            const scaleX = (w - 80) / Math.max(totalRange, 50);
+            const scaleY = (h - 80) / Math.max(hMax * 1.3, 20);
+
+            const startX = 40;
+            const startY = h - 40;
+
+            // Draw Axes
+            simCtx.strokeStyle = 'rgba(255,255,255,0.15)';
+            simCtx.lineWidth = 1;
+            simCtx.beginPath();
+            simCtx.moveTo(startX, 10);
+            simCtx.lineTo(startX, startY);
+            simCtx.lineTo(w - 10, startY);
+            simCtx.stroke();
+
+            // Draw Trajectory Line
+            simCtx.beginPath();
+            simCtx.strokeStyle = '#00F0FF';
+            simCtx.lineWidth = 3;
+
+            const steps = 100;
+            const maxStep = Math.floor(steps * progress);
+
+            for (let i = 0; i <= maxStep; i++) {
+                const t = (i / steps) * totalTime;
+                const x = v0 * Math.cos(rad) * t;
+                const y = v0 * Math.sin(rad) * t - 0.5 * g * t * t;
+
+                const cx = startX + x * scaleX;
+                const cy = startY - y * scaleY;
+
+                if (i === 0) simCtx.moveTo(cx, cy);
+                else simCtx.lineTo(cx, cy);
+            }
+            simCtx.stroke();
+
+            // Draw Motion Vector Arrow at Current Head
+            const currTime = totalTime * progress;
+            const currX = v0 * Math.cos(rad) * currTime;
+            const currY = v0 * Math.sin(rad) * currTime - 0.5 * g * currTime * currTime;
+
+            const headX = startX + currX * scaleX;
+            const headY = startY - currY * scaleY;
+
+            // Projectile Ball
+            simCtx.beginPath();
+            simCtx.arc(headX, headY, 6, 0, Math.PI * 2);
+            simCtx.fillStyle = '#FF007A';
+            simCtx.fill();
+            simCtx.strokeStyle = '#FFFFFF';
+            simCtx.lineWidth = 2;
+            simCtx.stroke();
+
+            // Tangent Velocity Vector Arrow
+            const vx = v0 * Math.cos(rad);
+            const vy = v0 * Math.sin(rad) - g * currTime;
+            
+            simCtx.beginPath();
+            simCtx.moveTo(headX, headY);
+            simCtx.lineTo(headX + vx * 0.4, headY - vy * 0.4);
+            simCtx.strokeStyle = '#7000FF';
+            simCtx.lineWidth = 2;
+            simCtx.stroke();
+        }
+
+        v0Slider.addEventListener('input', updateSimOutputs);
+        angleSlider.addEventListener('input', updateSimOutputs);
+        gSlider.addEventListener('input', updateSimOutputs);
+
+        fireBtn.addEventListener('click', () => {
+            if (isAnimating) return;
+            isAnimating = true;
+            animProgress = 0;
+
+            function step() {
+                animProgress += 0.02;
+                if (animProgress <= 1.0) {
+                    drawTrajectory(animProgress);
+                    requestAnimationFrame(step);
+                } else {
+                    drawTrajectory(1.0);
+                    isAnimating = false;
+                }
+            }
+            step();
+        });
+
+        resetBtn.addEventListener('click', () => {
+            isAnimating = false;
+            v0Slider.value = 65;
+            angleSlider.value = 45;
+            gSlider.value = 9.8;
+            updateSimOutputs();
+        });
+
+        window.addEventListener('resize', updateSimOutputs);
+        updateSimOutputs();
+    </script>
+</body>
+</html>
+```
